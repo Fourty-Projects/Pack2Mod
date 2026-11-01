@@ -70,6 +70,33 @@ Rules:
 Requires JDK 17. Output: `build/libs/pack2mod-<version>.jar`.
 
 > Tip: test without building with `.\gradlew.bat runClient` (or `./gradlew runClient`).
+> After **deleting or renaming** a pack in `forcedpacks/`, always build with
+> `clean` (`.\gradlew.bat clean build`) — Gradle never deletes stale copied
+> resources, otherwise deleted packs stay in the JAR and in game.
+
+### 2b. Multi-version builds (Modrinth / CurseForge)
+
+Versions (MC / Forge / Java / `pack_format`) are properties (`gradle.properties`,
+overridable with `-P...`), and CI builds a matrix of them:
+
+```powershell
+.\gradlew.bat build `
+  -Pmod_version=1.2.0 `
+  -Pminecraft_version=1.20.1 -Pminecraft_version_range='[1.20.1,1.21)' `
+  -Pforge_version=47.4.18 -Pforge_version_range='[47,)' -Pforge_loader_range='[47,)' `
+  -Ppack_format=15 -Pjava_version=17
+```
+
+Pushing a tag `vX.Y.Z` triggers `.github/workflows/build.yml`, which builds
+**every matrix entry** (game version + matching Forge + matching Java), then
+publishes a GitHub Release containing:
+- one jar per version: `pack2mod-<mod>-<mc>-forge-<forge>.jar` → upload each
+  as its own version on Modrinth/CurseForge with the matching game version;
+- one `pack2mod-<mod>-all-versions.zip` with all jars inside.
+
+To support a new MC version: add one `include:` entry in the workflow matrix
+(and check the sources still compile — mappings and pack APIs differ between
+MC versions — plus set the right `pack_format` in the embedded packs).
 
 ### 3. Ship it
 
