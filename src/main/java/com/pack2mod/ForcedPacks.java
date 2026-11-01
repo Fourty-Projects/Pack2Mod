@@ -55,16 +55,16 @@ public final class ForcedPacks {
                     .findResource("forcedpacks");
             collectFolderPacks(builtinRoot, forced);
         } catch (Exception e) {
-            LOGGER.warn("[Pack2Mod] Impossible de scanner forcedpacks/ dans le jar : {}", e.toString());
+            LOGGER.warn("[Pack2Mod] Could not scan forcedpacks/ inside the jar: {}", e.toString());
         }
 
         if (forced.isEmpty()) {
-            LOGGER.info("[Pack2Mod] Aucun pack force trouve dans forcedpacks/.");
+            LOGGER.info("[Pack2Mod] No forced pack found in forcedpacks/.");
             return;
         }
 
         for (Pack pack : forced) {
-            LOGGER.info("[Pack2Mod] Pack force : {}", pack.getId());
+            LOGGER.info("[Pack2Mod] Forcing pack: {}", pack.getId());
         }
 
         // required=true + Position.TOP + fixed=true => actif des le demarrage,
@@ -91,7 +91,7 @@ public final class ForcedPacks {
                 }
                 Path mcmeta = packDir.resolve("pack.mcmeta");
                 if (!Files.isRegularFile(mcmeta)) {
-                    LOGGER.debug("[Pack2Mod] Ignore (pas de pack.mcmeta) : {}", packDir);
+                    LOGGER.debug("[Pack2Mod] Skipped (no pack.mcmeta): {}", packDir);
                     continue;
                 }
                 String folderName = packDir.getFileName().toString();
@@ -115,14 +115,14 @@ public final class ForcedPacks {
                     if (pack != null) {
                         out.add(pack);
                     } else {
-                        LOGGER.warn("[Pack2Mod] pack.mcmeta illisible, pack ignore : {}", packDir);
+                        LOGGER.warn("[Pack2Mod] Unreadable pack.mcmeta, pack skipped: {}", packDir);
                     }
                 } catch (Exception e) {
-                    LOGGER.warn("[Pack2Mod] Pack ignore (erreur lecture) {} : {}", packDir, e.toString());
+                    LOGGER.warn("[Pack2Mod] Pack skipped (read error) {}: {}", packDir, e.toString());
                 }
             }
         } catch (IOException e) {
-            LOGGER.warn("[Pack2Mod] Erreur scan {} : {}", root, e.toString());
+            LOGGER.warn("[Pack2Mod] Scan error {}: {}", root, e.toString());
         }
     }
 }

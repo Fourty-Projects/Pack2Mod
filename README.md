@@ -142,8 +142,8 @@ No, that's expected. Required built-in packs are hidden from that screen.
 Check the visuals in game (GUI, textures, sounds) instead.
 
 **The pack doesn't apply at all, what do I check?**
-1. The game log must contain `[Pack2Mod] Pack force : builtin/pack2mod_<name>`.
-   If it says `Aucun pack force trouvé`, the `forcedpacks/` folder is empty or
+1. The game log must contain `[Pack2Mod] Forcing pack: builtin/pack2mod_<name>`.
+   If it says `No forced pack found in forcedpacks/`, the `forcedpacks/` folder is empty or
    missing `pack.mcmeta` files.
 2. The pack's `pack.mcmeta` must declare `pack_format: 15`.
 3. You must do a **full game restart** after embedding a new pack (it is part

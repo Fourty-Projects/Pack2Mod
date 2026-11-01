@@ -28,6 +28,6 @@ public class Pack2Mod {
         // L'enregistrement du listener se fait via
         // @Mod.EventBusSubscriber(bus = Bus.MOD) sur ForcedPacks :
         // AddPackFindersEvent est dispatche sur le bus MOD, pas le bus Forge.
-        LOGGER.info("[Pack2Mod] Initialise. Packs forces via forcedpacks/ (non modifiable en jeu)");
+        LOGGER.info("[Pack2Mod] Initialized. Forcing packs from forcedpacks/ (not editable in game)");
     }
 }
