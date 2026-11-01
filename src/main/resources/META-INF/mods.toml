@@ -8,6 +8,9 @@ version = '${mod_version}'
 displayName = 'Pack2Mod'
 authors = 'Toi'
 description = 'Forces embedded resource packs (forcedpacks folder) on every client, from the first game start.'
+# Client-side only : les resource packs sont une notion 100 % cliente.
+# IGNORE_ALL_VERSION = pas besoin du mod sur le serveur pour s'y connecter.
+displayTest = 'IGNORE_ALL_VERSION'
 
 [[dependencies.pack2mod]]
 modId = 'forge'

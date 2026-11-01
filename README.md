@@ -28,8 +28,9 @@ overrides, servers/modpacks that must look identical for every player.
 - Java **17**
 - Install like any Forge mod: drop the `.jar` into your `mods/` folder
 
-> The mod is client-side by nature (it forces *resource* packs). It is harmless
-> on a server install, but only clients will see the forced visuals.
+> The mod is **client-side only** (`displayTest = IGNORE_ALL_VERSION`):
+> install it on the **client**. Servers don't need it at all (it does nothing
+> there), and players can join any server with it installed.
 
 ## For modpack makers / distributors
 
