@@ -1,26 +1,32 @@
 # Build + release multi-versions (jars par version MC/Forge + zip global pour Modrinth).
 #
 # Déclenchement :
-#   - tag git "vX.Y.Z"  -> build les versions ACTIVÉES + GitHub Release (zip + jars)
+#   - push sur main     -> build les versions ACTIVÉES (vérif continue)
+#   - tag git "vX.Y.Z"  -> build + GitHub Release (zip + jars)
 #   - manuel (Actions)  -> build uniquement (artefacts téléchargeables)
 #
 # Une entrée = un couple (Minecraft / Forge / Java / pack_format).
-# `enabled: true`  -> buildée par la CI.
-# `enabled: false` -> steps skippés (pas d'échec, pas de build).
+# `enabled: true`  -> buildée par la CI (steps skippés sinon, sans échec).
+# `enabled: false` -> ignorée : il faut d'abord porter les sources (voir ci-dessous).
 #
 # Deux cas :
 #   1. Même toolchain que le code actuel (ligne 1.20.x, ForgeGradle 6, Java 17/21)
-#      -> `ref: ''` (sources actuelles), il suffit de passer enabled à true.
+#      -> `ref: ''` ou branche de port dédiée, puis enabled: true.
 #   2. Autre ère (1.7-1.19, 1.21+, 26.x : autre ForgeGradle, Java 8/16, mappings
 #      MCP, API des packs différente, voire NeoForge) -> porter les sources sur
 #      une branche (ex: `mc-1.12.2`), mettre son nom dans `ref:`, puis enabled: true.
-#      Sans branche portée, la version reste à false (le job est skippé, pas en échec).
+#      SANS branche poussée, le job échoue au checkout : laisser enabled: false.
+#
+# Branches de port existantes :
+#   - mc-1.20.2plus : API ResourcesSupplier 1.20.2-1.20.4 (openPrimary/openFull).
+#   - mc-1.20.5plus : API 1.20.5+ (PackLocationInfo/PackSelectionConfig, plus de
+#     flag boolean, PathPackResources sans isBuiltin).
 #
 # Note : forcedpacks/ est git-ignoré par défaut (packs privés).
 # Pour une release AVEC packs : `git add -f src/main/resources/forcedpacks/<pack>`
 # sur la branche/le tag releasé, ou renseigner les packs autrement.
 # Les packs embarqués doivent déclarer le pack_format de la version ciblée
-# (sinon le jeu les marque "incompatible" — required les force quand même).
+# (sinon le jeu les marque "incompatible", même si required les force quand même).
 
 name: Build all versions
 
@@ -47,35 +53,32 @@ jobs:
       matrix:
         include:
           # ================ 1.7 - 1.12 (ForgeGradle 2, Java 8, MCP) =================
-          - {mc: '1.7.10', forge: '10.13.4.1614', java: '8',  pack_format: '1', mc_range: '[1.7.10,1.8)',  forge_range: '[10,)', ref: 'mc-1.7.10',  enabled: true}
-          - {mc: '1.8.9',  forge: '11.15.1.2318', java: '8',  pack_format: '1', mc_range: '[1.8.9,1.9)',   forge_range: '[11,)', ref: 'mc-1.8.9',   enabled: true}
-          - {mc: '1.9.4',  forge: '12.17.0.2317', java: '8',  pack_format: '2', mc_range: '[1.9.4,1.10)',  forge_range: '[12,)', ref: 'mc-1.9.4',   enabled: true}
-          - {mc: '1.10.2', forge: '12.18.3.2511', java: '8',  pack_format: '2', mc_range: '[1.10.2,1.11)', forge_range: '[12,)', ref: 'mc-1.10.2',  enabled: true}
-          - {mc: '1.11.2', forge: '13.20.1.2588', java: '8',  pack_format: '3', mc_range: '[1.11.2,1.12)', forge_range: '[13,)', ref: 'mc-1.11.2',  enabled: true}
-          - {mc: '1.12.2', forge: '14.23.5.2859', java: '8',  pack_format: '3', mc_range: '[1.12.2,1.13)', forge_range: '[14,)', ref: 'mc-1.12.2',  enabled: true}
+          # Portage complet requis (branche mc-<version>) : laissez enabled: false.
+          - {mc: '1.7.10', forge: '10.13.4.1614', java: '8',  pack_format: '1', mc_range: '[1.7.10,1.8)',  forge_range: '[10,)', ref: 'mc-1.7.10',  enabled: false}
+          - {mc: '1.8.9',  forge: '11.15.1.2318', java: '8',  pack_format: '1', mc_range: '[1.8.9,1.9)',   forge_range: '[11,)', ref: 'mc-1.8.9',   enabled: false}
+          - {mc: '1.9.4',  forge: '12.17.0.2317', java: '8',  pack_format: '2', mc_range: '[1.9.4,1.10)',  forge_range: '[12,)', ref: 'mc-1.9.4',   enabled: false}
+          - {mc: '1.10.2', forge: '12.18.3.2511', java: '8',  pack_format: '2', mc_range: '[1.10.2,1.11)', forge_range: '[12,)', ref: 'mc-1.10.2',  enabled: false}
+          - {mc: '1.11.2', forge: '13.20.1.2588', java: '8',  pack_format: '3', mc_range: '[1.11.2,1.12)', forge_range: '[13,)', ref: 'mc-1.11.2',  enabled: false}
+          - {mc: '1.12.2', forge: '14.23.5.2859', java: '8',  pack_format: '3', mc_range: '[1.12.2,1.13)', forge_range: '[14,)', ref: 'mc-1.12.2',  enabled: false}
           # ================ 1.13 - 1.16 (FG3/FG4, Java 8) =================
-          - {mc: '1.13.2', forge: '25.0.223',      java: '8',  pack_format: '4', mc_range: '[1.13.2,1.14)', forge_range: '[25,)', ref: 'mc-1.13.2',  enabled: true}
-          - {mc: '1.14.4', forge: '28.2.26',       java: '8',  pack_format: '4', mc_range: '[1.14.4,1.15)', forge_range: '[28,)', ref: 'mc-1.14.4',  enabled: true}
-          - {mc: '1.15.2', forge: '31.2.57',       java: '8',  pack_format: '5', mc_range: '[1.15.2,1.16)', forge_range: '[31,)', ref: 'mc-1.15.2',  enabled: true}
-          - {mc: '1.16.5', forge: '36.2.34',       java: '8',  pack_format: '6', mc_range: '[1.16.5,1.17)', forge_range: '[36,)', ref: 'mc-1.16.5',  enabled: true}
+          - {mc: '1.13.2', forge: '25.0.223',      java: '8',  pack_format: '4', mc_range: '[1.13.2,1.14)', forge_range: '[25,)', ref: 'mc-1.13.2',  enabled: false}
+          - {mc: '1.14.4', forge: '28.2.26',       java: '8',  pack_format: '4', mc_range: '[1.14.4,1.15)', forge_range: '[28,)', ref: 'mc-1.14.4',  enabled: false}
+          - {mc: '1.15.2', forge: '31.2.57',       java: '8',  pack_format: '5', mc_range: '[1.15.2,1.16)', forge_range: '[31,)', ref: 'mc-1.15.2',  enabled: false}
+          - {mc: '1.16.5', forge: '36.2.34',       java: '8',  pack_format: '6', mc_range: '[1.16.5,1.17)', forge_range: '[36,)', ref: 'mc-1.16.5',  enabled: false}
           # ================ 1.17 - 1.19 (FG5, Java 16/17) =================
-          - {mc: '1.17.1', forge: '37.1.1',        java: '16', pack_format: '7',  mc_range: '[1.17.1,1.18)',   forge_range: '[37,)', ref: 'mc-1.17.1', enabled: true}
-          - {mc: '1.18.2', forge: '40.3.0',        java: '17', pack_format: '9',  mc_range: '[1.18.2,1.19)',   forge_range: '[40,)', ref: 'mc-1.18.2', enabled: true}
-          - {mc: '1.19.2', forge: '43.5.0',        java: '17', pack_format: '9',  mc_range: '[1.19.2,1.19.3)', forge_range: '[43,)', ref: 'mc-1.19.2', enabled: true}
-          - {mc: '1.19.4', forge: '45.4.0',        java: '17', pack_format: '13', mc_range: '[1.19.4,1.20)',   forge_range: '[45,)', ref: 'mc-1.19.4', enabled: true}
-          # ================ 1.20.x (ForgeGradle 6, mêmes sources) =================
+          - {mc: '1.17.1', forge: '37.1.1',        java: '16', pack_format: '7',  mc_range: '[1.17.1,1.18)',   forge_range: '[37,)', ref: 'mc-1.17.1', enabled: false}
+          - {mc: '1.18.2', forge: '40.3.0',        java: '17', pack_format: '9',  mc_range: '[1.18.2,1.19)',   forge_range: '[40,)', ref: 'mc-1.18.2', enabled: false}
+          - {mc: '1.19.2', forge: '43.5.0',        java: '17', pack_format: '9',  mc_range: '[1.19.2,1.19.3)', forge_range: '[43,)', ref: 'mc-1.19.2', enabled: false}
+          - {mc: '1.19.4', forge: '45.4.0',        java: '17', pack_format: '13', mc_range: '[1.19.4,1.20)',   forge_range: '[45,)', ref: 'mc-1.19.4', enabled: false}
+          # ================ 1.20.x (ForgeGradle 6, sources portées) =================
           - {mc: '1.20.1', forge: '47.4.18',       java: '17', pack_format: '15', mc_range: '[1.20.1,1.20.2)', forge_range: '[47,)', ref: '',        enabled: true}
-          # NOTE portage 1.20.2+ (testé : ne compile PAS tel quel) : ResourcesSupplier
-          # n'est plus une interface fonctionnelle (openPrimary + openFull au lieu
-          # de open). Une branche mc-1.20.2plus avec classe anonyme suffit pour
-          # 1.20.2/1.20.4/1.20.6 (le reste de l'API est identique).
           - {mc: '1.20.2', forge: '48.1.0',        java: '17', pack_format: '18', mc_range: '[1.20.2,1.20.3)', forge_range: '[48,)', ref: 'mc-1.20.2plus', enabled: true}
           - {mc: '1.20.4', forge: '49.2.13',       java: '17', pack_format: '22', mc_range: '[1.20.4,1.20.5)', forge_range: '[49,)', ref: 'mc-1.20.2plus', enabled: true}
-          - {mc: '1.20.6', forge: '50.2.14',       java: '21', pack_format: '32', mc_range: '[1.20.6,1.21)',   forge_range: '[50,)', ref: 'mc-1.20.2plus', enabled: true}
+          - {mc: '1.20.6', forge: '50.2.14',       java: '21', pack_format: '32', mc_range: '[1.20.6,1.21)',   forge_range: '[50,)', ref: 'mc-1.20.5plus', enabled: true}
           # ================ 1.21+ / 26.x (toolchain à valider au portage) =================
-          - {mc: '1.21.1', forge: '52.1.20',       java: '21', pack_format: '34', mc_range: '[1.21.1,1.21.2)', forge_range: '[52,)', ref: 'mc-1.21.1', enabled: true}
-          - {mc: '1.21.4', forge: '54.1.22',       java: '21', pack_format: '48', mc_range: '[1.21.4,1.21.5)', forge_range: '[54,)', ref: 'mc-1.21.4', enabled: true} # pack_format à confirmer
-          - {mc: '26.3',   forge: '66.1.0',        java: '21', pack_format: '?',  mc_range: '[26.3,27)',       forge_range: '[66,)', ref: 'mc-26.x',   enabled: true} # pack_format à confirmer
+          - {mc: '1.21.1', forge: '52.1.20',       java: '21', pack_format: '34', mc_range: '[1.21.1,1.21.2)', forge_range: '[52,)', ref: 'mc-1.21.1', enabled: false}
+          - {mc: '1.21.4', forge: '54.1.22',       java: '21', pack_format: '48', mc_range: '[1.21.4,1.21.5)', forge_range: '[54,)', ref: 'mc-1.21.4', enabled: false} # pack_format à confirmer
+          - {mc: '26.3',   forge: '66.1.0',        java: '21', pack_format: '?',  mc_range: '[26.3,27)',       forge_range: '[66,)', ref: 'mc-26.x',   enabled: false} # pack_format à confirmer
 
     steps:
       - name: Checkout ${{ matrix.ref || github.ref_name }}
