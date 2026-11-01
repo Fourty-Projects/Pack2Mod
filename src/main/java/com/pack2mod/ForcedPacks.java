@@ -3,8 +3,8 @@ package com.pack2mod;
 import com.mojang.logging.LogUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.repository.Pack;
-import net.minecraft.server.packs.repository.PackCompatibility;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.fml.ModList;
@@ -92,16 +92,17 @@ public final class ForcedPacks {
                 Component title = Component.literal("Pack2Mod: " + folderName);
 
                 try {
-                    // Ordre Forge 1.20.1 : (id, titre, required, chemin, position, source, compatibilite).
+                    Pack.ResourcesSupplier supplier = packId -> new PathPackResources(packId, packDir, true);
+                    // Signature 1.20.1 : (id, titre, required, resources, type, position, source).
                     // required=true => toujours actif des le demarrage, masque de l'ecran des packs.
                     Pack pack = Pack.readMetaAndCreate(
                             id,
                             title,
                             true,
-                            packDir,
+                            supplier,
+                            PackType.CLIENT_RESOURCES,
                             Pack.Position.TOP,
-                            PackSource.BUILT_IN,
-                            PackCompatibility.COMPATIBLE
+                            PackSource.BUILT_IN
                     );
                     if (pack != null) {
                         out.add(pack);

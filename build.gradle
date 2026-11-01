@@ -1,18 +1,17 @@
 buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net/' }
-        gradlePluginPortal()
         mavenCentral()
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:6.0.+'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:6.0.29'
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
-apply plugin: 'net.minecraftforge.gradle.userdev'
+apply plugin: 'net.minecraftforge.gradle'
 
 version = '1.0.0'
 group = 'com.pack2mod'
