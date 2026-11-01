@@ -26,6 +26,8 @@ name: Build all versions
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
   workflow_dispatch:
