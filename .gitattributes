@@ -1,0 +1,8 @@
+# Garde les fins de ligne Unix pour le wrapper (sinon "bad interpreter" sur Linux/macOS).
+gradlew text eol=lf
+*.sh text eol=lf
+# Le wrapper jar et les zips restent binaires.
+*.jar binary
+*.zip binary
+# Scripts Windows en CRLF.
+*.bat text eol=crlf
