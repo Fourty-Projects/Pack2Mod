@@ -9,13 +9,10 @@
 # `enabled: true`  -> buildée par la CI (steps skippés sinon, sans échec).
 # `enabled: false` -> ignorée : il faut d'abord porter les sources (voir ci-dessous).
 #
-# Deux cas :
-#   1. Même toolchain que le code actuel (ligne 1.20.x, ForgeGradle 6, Java 17/21)
-#      -> `ref: ''` ou branche de port dédiée, puis enabled: true.
-#   2. Autre ère (1.7-1.19, 1.21+, 26.x : autre ForgeGradle, Java 8/16, mappings
-#      MCP, API des packs différente, voire NeoForge) -> porter les sources sur
-#      une branche (ex: `mc-1.12.2`), mettre son nom dans `ref:`, puis enabled: true.
-#      SANS branche poussée, le job échoue au checkout : laisser enabled: false.
+# Stratégie : tout ce qui peut compiler avec les sources actuelles est testé
+# par la CI (c'est elle qui tranche). Les vieilles ères restent disabled :
+# pas de branche = checkout impossible, et toolchain incompatible de toute
+# façon (voir tableau des versions).
 #
 # Branches de port existantes :
 #   - mc-1.20.2plus : API ResourcesSupplier 1.20.2-1.20.4 (openPrimary/openFull).
@@ -66,10 +63,10 @@ jobs:
           - {mc: '1.15.2', forge: '31.2.57',       java: '8',  pack_format: '5', mc_range: '[1.15.2,1.16)', forge_range: '[31,)', ref: 'mc-1.15.2',  enabled: false}
           - {mc: '1.16.5', forge: '36.2.34',       java: '8',  pack_format: '6', mc_range: '[1.16.5,1.17)', forge_range: '[36,)', ref: 'mc-1.16.5',  enabled: false}
           # ================ 1.17 - 1.19 (FG5, Java 16/17) =================
-          - {mc: '1.17.1', forge: '37.1.1',        java: '16', pack_format: '7',  mc_range: '[1.17.1,1.18)',   forge_range: '[37,)', ref: 'mc-1.17.1', enabled: false}
-          - {mc: '1.18.2', forge: '40.3.0',        java: '17', pack_format: '9',  mc_range: '[1.18.2,1.19)',   forge_range: '[40,)', ref: 'mc-1.18.2', enabled: false}
-          - {mc: '1.19.2', forge: '43.5.0',        java: '17', pack_format: '9',  mc_range: '[1.19.2,1.19.3)', forge_range: '[43,)', ref: 'mc-1.19.2', enabled: false}
-          - {mc: '1.19.4', forge: '45.4.0',        java: '17', pack_format: '13', mc_range: '[1.19.4,1.20)',   forge_range: '[45,)', ref: 'mc-1.19.4', enabled: false}
+          - {mc: '1.17.1', forge: '37.1.1',        java: '16', pack_format: '7',  mc_range: '[1.17.1,1.18)',   forge_range: '[37,)', ref: '', enabled: true}
+          - {mc: '1.18.2', forge: '40.3.0',        java: '17', pack_format: '9',  mc_range: '[1.18.2,1.19)',   forge_range: '[40,)', ref: '', enabled: true}
+          - {mc: '1.19.2', forge: '43.5.0',        java: '17', pack_format: '9',  mc_range: '[1.19.2,1.19.3)', forge_range: '[43,)', ref: '', enabled: true}
+          - {mc: '1.19.4', forge: '45.4.0',        java: '17', pack_format: '13', mc_range: '[1.19.4,1.20)',   forge_range: '[45,)', ref: '', enabled: true}
           # ================ 1.20.x (ForgeGradle 6, sources portées) =================
           - {mc: '1.20.1', forge: '47.4.18',       java: '17', pack_format: '15', mc_range: '[1.20.1,1.20.2)', forge_range: '[47,)', ref: '',        enabled: true}
           - {mc: '1.20.2', forge: '48.1.0',        java: '17', pack_format: '18', mc_range: '[1.20.2,1.20.3)', forge_range: '[48,)', ref: 'mc-1.20.2plus', enabled: true}
@@ -78,7 +75,7 @@ jobs:
           # ================ 1.21+ / 26.x (toolchain à valider au portage) =================
           - {mc: '1.21.1', forge: '52.1.20',       java: '21', pack_format: '34', mc_range: '[1.21.1,1.21.2)', forge_range: '[52,)', ref: 'mc-1.21', enabled: true}
           - {mc: '1.21.4', forge: '54.1.22',       java: '21', pack_format: '48', mc_range: '[1.21.4,1.21.5)', forge_range: '[54,)', ref: 'mc-1.21', enabled: true}
-          - {mc: '26.3',   forge: '66.1.0',        java: '21', pack_format: '?',  mc_range: '[26.3,27)',       forge_range: '[66,)', ref: 'mc-26.x',   enabled: false} # pack_format à confirmer
+          - {mc: '26.3',   forge: '66.1.0',        java: '21', pack_format: '?',  mc_range: '[26.3,27)',       forge_range: '[66,)', ref: '', enabled: true} # toolchain à valider : la CI tranche
 
     steps:
       - name: Checkout ${{ matrix.ref || github.ref_name }}
@@ -145,6 +142,8 @@ jobs:
 
   package:
     name: Zip global + Release
+    # Tourne même si des versions échouent : on zippe ce qui a buildé.
+    if: always()
     runs-on: ubuntu-latest
     needs: build
     steps:
