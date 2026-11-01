@@ -61,7 +61,7 @@ jobs:
           - {mc: '1.13.2', forge: '25.0.223',      java: '8',  pack_format: '4', mc_range: '[1.13.2,1.14)', forge_range: '[25,)', ref: 'mc-1.13.2',  enabled: false}
           - {mc: '1.14.4', forge: '28.2.26',       java: '8',  pack_format: '4', mc_range: '[1.14.4,1.15)', forge_range: '[28,)', ref: 'mc-1.14.4',  enabled: false}
           - {mc: '1.15.2', forge: '31.2.57',       java: '8',  pack_format: '5', mc_range: '[1.15.2,1.16)', forge_range: '[31,)', ref: 'mc-1.15.2',  enabled: false}
-          - {mc: '1.16.5', forge: '36.2.34',       java: '8',  pack_format: '6', mc_range: '[1.16.5,1.17)', forge_range: '[36,)', ref: 'mc-1.16.5',  enabled: false}
+          - {mc: '1.16.5', forge: '36.2.34',       java: '8',  pack_format: '6', mc_range: '[1.16.5,1.17)', forge_range: '[36,)', ref: 'mc-1.16.5',  enabled: true}
           # ================ 1.17 - 1.19 (FG5, Java 16/17) =================
           - {mc: '1.17.1', forge: '37.1.1',        java: '16', pack_format: '7',  mc_range: '[1.17.1,1.18)',   forge_range: '[37,)', ref: 'mc-1.18', enabled: true}
           - {mc: '1.18.2', forge: '40.3.0',        java: '17', pack_format: '9',  mc_range: '[1.18.2,1.19)',   forge_range: '[40,)', ref: 'mc-1.18', enabled: true}
