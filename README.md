@@ -95,18 +95,18 @@ then publishes a GitHub Release containing:
   as its own version on Modrinth/CurseForge with the matching game version;
 - one `pack2mod-<mod>-all-versions.zip` with all jars inside.
 
-### Statut des versions
+### Version status
 
-| Version(s) | Branche | Outillage | État |
+| Version(s) | Branch | Toolchain | Status |
 |---|---|---|---|
-| 1.20.1 | `main` | FG6, Java 17 | ✅ vérifié |
-| 1.20.2, 1.20.4 | `mc-1.20.2plus` | FG6, Java 17 | ✅ vérifié |
-| 1.20.6 | `mc-1.20.5plus` | FG6, Java 21 | ✅ vérifié |
-| 1.21.1, 1.21.4 | `mc-1.21` | FG6, Java 21 | ✅ vérifié |
-| 1.19.2, 1.19.4 | `main` (mêmes sources) | FG6, Java 17 | ✅ 1.19.4 vérifiée en local, 1.19.2 via CI |
-| 1.17.1, 1.18.2 | `mc-1.18` (API Pack 1.18) | FG6, Java 16/17 | ✅ 1.18.2 vérifiée en local, 1.17.1 via CI |
-| 1.7.10 → 1.16.5 | `mc-<version>` à créer | FG2/FG3/FG4, Java 8, MCP | ⏳ portage complet requis |
-| 26.x | `mc-26.x` à créer | toolchain inconnue | ⏳ portage complet requis |
+| 1.20.1 | `main` | FG6, Java 17 | ✅ verified |
+| 1.20.2, 1.20.4 | `mc-1.20.2plus` | FG6, Java 17 | ✅ verified |
+| 1.20.6 | `mc-1.20.5plus` | FG6, Java 21 | ✅ verified |
+| 1.21.1, 1.21.4 | `mc-1.21` | FG6, Java 21 | ✅ verified |
+| 1.19.2, 1.19.4 | `main` (same sources) | FG6, Java 17 | ✅ 1.19.4 verified locally, 1.19.2 via CI |
+| 1.17.1, 1.18.2 | `mc-1.18` (1.18 Pack API) | FG6, Java 16/17 | ✅ 1.18.2 verified locally, 1.17.1 via CI |
+| 1.7.10 → 1.16.5 | `mc-<version>` to create | FG2/FG3/FG4, Java 8, MCP | ⏳ full port required |
+| 26.x | `mc-26.x` to create | unknown toolchain | ⏳ full port required |
 
 The matrix covers 1.7.10 → 26.x with the right toolchain per version
 (Java 8 up to 1.16.5, 16 for 1.17.1, 17 for 1.18.2–1.20.4, 21 beyond).
@@ -161,17 +161,3 @@ Other Minecraft versions need the sources ported (mappings and pack APIs differ)
 **License?**
 MIT — do whatever you want with it, including shipping it inside commercial
 modpacks. Credit appreciated but not required.
-
----
-
-## 🇫🇷 En bref (français)
-
-Pack2Mod force des resource packs **embarqués dans le JAR**, actifs **dès le
-démarrage**, **cachés** de l'écran des packs et **non désactivables** en jeu.
-
-- **Joueurs :** Minecraft 1.20.1 + Forge 47.4.x + Java 17, mettez le `.jar`
-  dans `mods/`, rien d'autre à faire.
-- **Créateurs :** dézippez vos packs dans
-  `src/main/resources/forcedpacks/<mon_pack>/` (`pack.mcmeta` avec
-  `pack_format: 15` obligatoire), compilez (`.\gradlew.bat build`), distribuez
-  le JAR. Les packs restent privés (dossier ignoré par git).
