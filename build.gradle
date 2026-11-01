@@ -4,7 +4,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath "net.minecraftforge.gradle:ForgeGradle:${project.findProperty('forgegradle_version') ?: '6.0.29'}"
+        classpath 'net.minecraftforge.gradle:ForgeGradle:6.0.29'
     }
 }
 
@@ -13,21 +13,17 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'net.minecraftforge.gradle'
 
-version = project.findProperty('mod_version') ?: '1.0.0-dev'
+version = '1.0.0'
 group = 'com.pack2mod'
-
-def mcVersion = project.findProperty('minecraft_version') ?: '1.20.1'
-def forgeVersion = project.findProperty('forge_version') ?: '47.4.18'
-def javaVersion = (project.findProperty('java_version') ?: '17') as int
 
 base {
     archivesName = 'pack2mod'
 }
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(javaVersion)
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 minecraft {
-    mappings channel: 'official', version: mcVersion
+    mappings channel: 'official', version: '1.20.1'
 
     runs {
         client {
@@ -67,24 +63,7 @@ minecraft {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${mcVersion}-${forgeVersion}"
-}
-
-tasks.withType(ProcessResources).configureEach {
-    var replaceProperties = [
-        minecraft_version: mcVersion,
-        minecraft_version_range: project.findProperty('minecraft_version_range') ?: '[1.20.1,1.21)',
-        forge_version: forgeVersion,
-        forge_version_range: project.findProperty('forge_version_range') ?: '[47,)',
-        forge_loader_range: project.findProperty('forge_loader_range') ?: '[47,)',
-        pack_format: (project.findProperty('pack_format') ?: '15'),
-        mod_id: 'pack2mod',
-        mod_version: project.version.toString()
-    ]
-    inputs.properties replaceProperties
-    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
-        expand replaceProperties
-    }
+    minecraft 'net.minecraftforge:forge:1.20.1-47.4.18'
 }
 
 tasks.withType(JavaCompile).configureEach {

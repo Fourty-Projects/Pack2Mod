@@ -1,27 +1,27 @@
 modLoader = 'javafml'
-loaderVersion = '${forge_loader_range}'
+loaderVersion = '[47,)'
 license = 'MIT'
 
 [[mods]]
 modId = 'pack2mod'
-version = '${mod_version}'
+version = '1.0.0'
 displayName = 'Pack2Mod'
 authors = 'Toi'
 description = 'Forces embedded resource packs (forcedpacks folder) on every client, from the first game start.'
-# Client-side only : les resource packs sont une notion 100 % cliente.
-# IGNORE_ALL_VERSION = pas besoin du mod sur le serveur pour s'y connecter.
+# Client-side only: resource packs only exist on the client.
+# IGNORE_ALL_VERSION = no need for the mod on the server to join it.
 displayTest = 'IGNORE_ALL_VERSION'
 
 [[dependencies.pack2mod]]
 modId = 'forge'
 mandatory = true
-versionRange = '${forge_version_range}'
+versionRange = '[47,)'
 ordering = 'NONE'
 side = 'BOTH'
 
 [[dependencies.pack2mod]]
 modId = 'minecraft'
 mandatory = true
-versionRange = '${minecraft_version_range}'
+versionRange = '[1.20.1,1.21)'
 ordering = 'NONE'
 side = 'BOTH'

@@ -75,45 +75,9 @@ Requires JDK 17. Output: `build/libs/pack2mod-<version>.jar`.
 > `clean` (`.\gradlew.bat clean build`) — Gradle never deletes stale copied
 > resources, otherwise deleted packs stay in the JAR and in game.
 
-### 2b. Multi-version builds (Modrinth / CurseForge)
-
-Versions (MC / Forge / Java / `pack_format`) are properties (`gradle.properties`,
-overridable with `-P...`), and CI builds a matrix of them:
-
-```powershell
-.\gradlew.bat build `
-  '-Pmod_version=1.2.0' `
-  '-Pminecraft_version=1.20.1' '-Pminecraft_version_range=[1.20.1,1.20.2)' `
-  '-Pforge_version=47.4.18' '-Pforge_version_range=[47,)' '-Pforge_loader_range=[47,)' `
-  '-Ppack_format=15' '-Pjava_version=17'
-```
-
 Pushing a tag `vX.Y.Z` triggers `.github/workflows/build.yml`, which builds
-**every enabled matrix entry** (game version + matching Forge + matching Java),
-then publishes a GitHub Release containing:
-- one jar per version: `pack2mod-<mod>-<mc>-forge-<forge>.jar` → upload each
-  as its own version on Modrinth/CurseForge with the matching game version;
-- one `pack2mod-<mod>-all-versions.zip` with all jars inside.
-
-### Version status
-
-| Version(s) | Branch | Toolchain | Status |
-|---|---|---|---|
-| 1.20.1 | `main` | FG6, Java 17 | ✅ verified |
-| 1.20.2, 1.20.4 | `mc-1.20.2plus` | FG6, Java 17 | ✅ verified |
-| 1.20.6 | `mc-1.20.5plus` | FG6, Java 21 | ✅ verified |
-| 1.21.1, 1.21.4 | `mc-1.21` | FG6, Java 21 | ✅ verified |
-| 1.19.2, 1.19.4 | `main` (same sources) | FG6, Java 17 | ✅ 1.19.4 verified locally, 1.19.2 via CI |
-| 1.17.1, 1.18.2 | `mc-1.18` (1.18 Pack API) | FG6, Java 16/17 | ✅ 1.18.2 verified locally, 1.17.1 via CI |
-| 1.7.10 → 1.16.5 | `mc-<version>` to create | FG2/FG3/FG4, Java 8, MCP | ⏳ full port required |
-| 26.x | `mc-26.x` to create | unknown toolchain | ⏳ full port required |
-
-The matrix covers 1.7.10 → 26.x with the right toolchain per version
-(Java 8 up to 1.16.5, 16 for 1.17.1, 17 for 1.18.2–1.20.4, 21 beyond).
-Same sources only compile within one toolchain era: the 1.20.x line
-(ForgeGradle 6) is the only one enabled today (1.20.1 verified).
-Older/newer entries are scaffolded but disabled — port the sources to a
-`mc-<version>` branch, set its name in the entry's `ref:`, flip `enabled: true`.
+the jar and publishes a GitHub Release with it. Upload the released jar on
+Modrinth/CurseForge as a 1.20.1 version (Forge 47.4.x).
 
 ### 3. Ship it
 
@@ -155,8 +119,8 @@ Forced packs sit at top priority, so their assets win over vanilla and over
 regular packs below them.
 
 **Which Forge versions are supported?**
-Built and tested on **1.20.1 / Forge 47.4.18**, compatible with the 47.4.x line.
-Other Minecraft versions need the sources ported (mappings and pack APIs differ).
+Minecraft **1.20.1** with Forge **47.4.x** (built and tested against 47.4.18).
+This mod targets 1.20.1 only.
 
 **License?**
 MIT — do whatever you want with it, including shipping it inside commercial
