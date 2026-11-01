@@ -81,22 +81,25 @@ overridable with `-P...`), and CI builds a matrix of them:
 
 ```powershell
 .\gradlew.bat build `
-  -Pmod_version=1.2.0 `
-  -Pminecraft_version=1.20.1 -Pminecraft_version_range='[1.20.1,1.21)' `
-  -Pforge_version=47.4.18 -Pforge_version_range='[47,)' -Pforge_loader_range='[47,)' `
-  -Ppack_format=15 -Pjava_version=17
+  '-Pmod_version=1.2.0' `
+  '-Pminecraft_version=1.20.1' '-Pminecraft_version_range=[1.20.1,1.20.2)' `
+  '-Pforge_version=47.4.18' '-Pforge_version_range=[47,)' '-Pforge_loader_range=[47,)' `
+  '-Ppack_format=15' '-Pjava_version=17'
 ```
 
 Pushing a tag `vX.Y.Z` triggers `.github/workflows/build.yml`, which builds
-**every matrix entry** (game version + matching Forge + matching Java), then
-publishes a GitHub Release containing:
+**every enabled matrix entry** (game version + matching Forge + matching Java),
+then publishes a GitHub Release containing:
 - one jar per version: `pack2mod-<mod>-<mc>-forge-<forge>.jar` → upload each
   as its own version on Modrinth/CurseForge with the matching game version;
 - one `pack2mod-<mod>-all-versions.zip` with all jars inside.
 
-To support a new MC version: add one `include:` entry in the workflow matrix
-(and check the sources still compile — mappings and pack APIs differ between
-MC versions — plus set the right `pack_format` in the embedded packs).
+The matrix covers 1.7.10 → 26.x with the right toolchain per version
+(Java 8 up to 1.16.5, 16 for 1.17.1, 17 for 1.18.2–1.20.4, 21 beyond).
+Same sources only compile within one toolchain era: the 1.20.x line
+(ForgeGradle 6) is the only one enabled today (1.20.1 verified).
+Older/newer entries are scaffolded but disabled — port the sources to a
+`mc-<version>` branch, set its name in the entry's `ref:`, flip `enabled: true`.
 
 ### 3. Ship it
 
