@@ -1,0 +1,40 @@
+# Gradle
+.gradle/
+build/
+out/
+
+# Dossier de test local (contient options.txt, mondes, tokens éventuels -> sensible)
+run/
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.classpath
+.project
+.settings/
+bin/
+eclipse/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Données sensibles / locales (ne jamais committer)
+local.properties
+gradle-local.properties
+*.jks
+*.keystore
+*.p12
+*.pfx
+*secret*
+*token*
+*.env
+
+# Ressource packs embarqués (privés / volumineux -> ne pas partager via git)
+# Seule la structure du dossier est versionnée (.gitkeep).
+src/main/resources/forcedpacks/*
+!src/main/resources/forcedpacks/.gitkeep

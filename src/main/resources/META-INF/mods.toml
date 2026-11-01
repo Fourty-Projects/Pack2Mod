@@ -1,0 +1,24 @@
+modLoader = 'javafml'
+loaderVersion = '[47,)'
+license = 'MIT'
+
+[[mods]]
+modId = 'pack2mod'
+version = '${mod_version}'
+displayName = 'Pack2Mod'
+authors = 'Toi'
+description = 'Force des resource packs embarques dans le mod (dossier forcedpacks) + dossier config/pack2mod, des le demarrage.'
+
+[[dependencies.pack2mod]]
+modId = 'forge'
+mandatory = true
+versionRange = '[47,)'
+ordering = 'NONE'
+side = 'BOTH'
+
+[[dependencies.pack2mod]]
+modId = 'minecraft'
+mandatory = true
+versionRange = '[1.20.1,1.21)'
+ordering = 'NONE'
+side = 'BOTH'
