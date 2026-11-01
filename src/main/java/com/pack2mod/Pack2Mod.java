@@ -1,7 +1,6 @@
 package com.pack2mod;
 
 import com.mojang.logging.LogUtils;
-import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 
@@ -26,13 +25,9 @@ public class Pack2Mod {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public Pack2Mod() {
-        // AddPackFindersEvent est sur le bus Forge, pas le bus mod.
-        // On l'enregistre via classe statique (voir ForcedPacks).
-        net.minecraftforge.common.MinecraftForge.EVENT_BUS.addListener(this::onAddPackFinders);
+        // L'enregistrement du listener se fait via
+        // @Mod.EventBusSubscriber(bus = Bus.MOD) sur ForcedPacks :
+        // AddPackFindersEvent est dispatche sur le bus MOD, pas le bus Forge.
         LOGGER.info("[Pack2Mod] Initialise. Packs forces via forcedpacks/ (non modifiable en jeu)");
-    }
-
-    private void onAddPackFinders(AddPackFindersEvent event) {
-        ForcedPacks.onAddPackFinders(event);
     }
 }

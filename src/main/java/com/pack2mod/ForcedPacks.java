@@ -7,7 +7,9 @@ import net.minecraft.server.packs.PathPackResources;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraftforge.event.AddPackFindersEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 
 import java.io.IOException;
@@ -22,12 +24,18 @@ import java.util.Locale;
  * Enregistre les packs forces comme packs CLIENT "required" (toujours actifs).
  * Appele des le demarrage du jeu, y compris au tout premier chargement des ressources :
  * aucune action joueur, aucun rechargement manuel requis.
+ *
+ * <p>IMPORTANT : cet evenement est dispatche par Forge sur le bus MOD
+ * (via ModLoader.postEvent dans ClientModLoader), PAS sur le bus Forge.
+ * D'ou l'enregistrement via {@code @Mod.EventBusSubscriber(bus = Bus.MOD)}.
  */
+@Mod.EventBusSubscriber(modid = Pack2Mod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public final class ForcedPacks {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     private ForcedPacks() {}
 
+    @SubscribeEvent
     public static void onAddPackFinders(AddPackFindersEvent event) {
         // On ne force que les ressources client (textures, modeles, sons, lang...).
         // Les datapacks serveur ne sont pas concernes.
