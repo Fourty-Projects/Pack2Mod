@@ -95,6 +95,19 @@ then publishes a GitHub Release containing:
   as its own version on Modrinth/CurseForge with the matching game version;
 - one `pack2mod-<mod>-all-versions.zip` with all jars inside.
 
+### Statut des versions
+
+| Version(s) | Branche | Outillage | État |
+|---|---|---|---|
+| 1.20.1 | `main` | FG6, Java 17 | ✅ vérifié |
+| 1.20.2, 1.20.4 | `mc-1.20.2plus` | FG6, Java 17 | ✅ vérifié |
+| 1.20.6 | `mc-1.20.5plus` | FG6, Java 21 | ✅ vérifié |
+| 1.21.1, 1.21.4 | `mc-1.21` | FG6, Java 21 | ✅ vérifié |
+| 1.19.2, 1.19.4 | `main` (mêmes sources) | FG6, Java 17 | 1.19.4 ✅ vérifié, 1.19.2 🔄 en test |
+| 1.17.1, 1.18.2 | `mc-1.18` (prête) | à valider après 1.19.x | ⏳ en attente |
+| 1.7.10 → 1.16.5 | `mc-<version>` à créer | FG2/FG3/FG4, Java 8, MCP | ⏳ portage complet requis |
+| 26.x | `mc-26.x` à créer | toolchain inconnue | ⏳ portage complet requis |
+
 The matrix covers 1.7.10 → 26.x with the right toolchain per version
 (Java 8 up to 1.16.5, 16 for 1.17.1, 17 for 1.18.2–1.20.4, 21 beyond).
 Same sources only compile within one toolchain era: the 1.20.x line
