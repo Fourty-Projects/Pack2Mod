@@ -63,9 +63,13 @@ jobs:
           - {mc: '1.19.4', forge: '45.4.0',        java: '17', pack_format: '13', mc_range: '[1.19.4,1.20)',   forge_range: '[45,)', ref: 'mc-1.19.4', enabled: false}
           # ================ 1.20.x (ForgeGradle 6, mêmes sources) =================
           - {mc: '1.20.1', forge: '47.4.18',       java: '17', pack_format: '15', mc_range: '[1.20.1,1.20.2)', forge_range: '[47,)', ref: '',        enabled: true}
-          - {mc: '1.20.2', forge: '48.1.0',        java: '17', pack_format: '18', mc_range: '[1.20.2,1.20.3)', forge_range: '[48,)', ref: '',        enabled: false}
-          - {mc: '1.20.4', forge: '49.2.13',       java: '17', pack_format: '22', mc_range: '[1.20.4,1.20.5)', forge_range: '[49,)', ref: '',        enabled: false}
-          - {mc: '1.20.6', forge: '50.2.14',       java: '21', pack_format: '32', mc_range: '[1.20.6,1.21)',   forge_range: '[50,)', ref: '',        enabled: false}
+          # NOTE portage 1.20.2+ (testé : ne compile PAS tel quel) : ResourcesSupplier
+          # n'est plus une interface fonctionnelle (openPrimary + openFull au lieu
+          # de open). Une branche mc-1.20.2plus avec classe anonyme suffit pour
+          # 1.20.2/1.20.4/1.20.6 (le reste de l'API est identique).
+          - {mc: '1.20.2', forge: '48.1.0',        java: '17', pack_format: '18', mc_range: '[1.20.2,1.20.3)', forge_range: '[48,)', ref: 'mc-1.20.2plus', enabled: false}
+          - {mc: '1.20.4', forge: '49.2.13',       java: '17', pack_format: '22', mc_range: '[1.20.4,1.20.5)', forge_range: '[49,)', ref: 'mc-1.20.2plus', enabled: false}
+          - {mc: '1.20.6', forge: '50.2.14',       java: '21', pack_format: '32', mc_range: '[1.20.6,1.21)',   forge_range: '[50,)', ref: 'mc-1.20.2plus', enabled: false}
           # ================ 1.21+ / 26.x (toolchain à valider au portage) =================
           - {mc: '1.21.1', forge: '52.1.20',       java: '21', pack_format: '34', mc_range: '[1.21.1,1.21.2)', forge_range: '[52,)', ref: 'mc-1.21.1', enabled: false}
           - {mc: '1.21.4', forge: '54.1.22',       java: '21', pack_format: '48', mc_range: '[1.21.4,1.21.5)', forge_range: '[54,)', ref: 'mc-1.21.4', enabled: false} # pack_format à confirmer
